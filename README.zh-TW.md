@@ -4,9 +4,9 @@
 
 給活在 AI 額度上限裡的人的視覺化療癒裝置。
 
-**專案介紹頁：** https://teddashh.github.io/reset-therapy/?lang=zh-TW
+**專案介紹頁：** https://ted-h-com.github.io/reset-therapy/?lang=zh-TW
 
-**線上玩：** https://teddashh.github.io/reset-therapy/play/?lang=zh
+**線上玩：** https://ted-h-com.github.io/reset-therapy/play/?lang=zh
 
 **全站共用次數版：** https://www.ted-h.com/zh_TW/reset-therapy（同一個玩具，掛上選配的統計模組）
 
@@ -30,7 +30,7 @@
 
 ## 執行
 
-線上玩：<https://teddashh.github.io/reset-therapy/play/?lang=zh>（英文版：<https://teddashh.github.io/reset-therapy/play/>）。
+線上玩：<https://ted-h-com.github.io/reset-therapy/play/?lang=zh>（英文版：<https://ted-h-com.github.io/reset-therapy/play/>）。
 
 想自己跑一份，用瀏覽器打開 `index.html` 就是全部了。任何靜態主機都能放。語言用 `?lang=zh` / `?lang=en`，或右上角的切換按鈕。
 
@@ -78,7 +78,7 @@ python3 drg_post.py                            # 裁切、轉 WebP、寫進 ../i
 
 ## GitHub Pages 怎麼發佈
 
-`.github/workflows/pages.yml` 會把 `site/`（專案介紹頁）發佈到 <https://teddashh.github.io/reset-therapy/>，並把 `index.html` 複製成 `play/index.html`，所以玩具在 <https://teddashh.github.io/reset-therapy/play/>。`main` 分支上的 `site/`、`index.html` 或 workflow 有變動時就會執行。
+`.github/workflows/pages.yml` 會把 `site/`（專案介紹頁）發佈到 <https://ted-h-com.github.io/reset-therapy/>，並把 `index.html` 複製成 `play/index.html`，所以玩具在 <https://ted-h-com.github.io/reset-therapy/play/>。`main` 分支上的 `site/`、`index.html` 或 workflow 有變動時就會執行。
 
 ## 檔案
 

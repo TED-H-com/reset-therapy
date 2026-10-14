@@ -4,9 +4,9 @@
 
 A visual therapy device for people who live inside AI quota limits.
 
-**Project page:** https://teddashh.github.io/reset-therapy/
+**Project page:** https://ted-h-com.github.io/reset-therapy/
 
-**Play:** https://teddashh.github.io/reset-therapy/play/
+**Play:** https://ted-h-com.github.io/reset-therapy/play/
 
 **With shared counters:** https://www.ted-h.com/reset-therapy (the same toy, running the optional stats module)
 
@@ -30,7 +30,7 @@ Four painstakingly faked usage panels (ChatGPT / Codex, Claude, Gemini, Grok) si
 
 ## Run it
 
-Play it at <https://teddashh.github.io/reset-therapy/play/> (Chinese: <https://teddashh.github.io/reset-therapy/play/?lang=zh>).
+Play it at <https://ted-h-com.github.io/reset-therapy/play/> (Chinese: <https://ted-h-com.github.io/reset-therapy/play/?lang=zh>).
 
 To run your own copy, open `index.html` in a browser. That is the whole app. Any static host works. Language: `?lang=zh` / `?lang=en`, or the switcher in the top-right corner.
 
@@ -78,7 +78,7 @@ python3 drg_post.py                            # crop, WebP, inject into ../inde
 
 ## How GitHub Pages serves it
 
-`.github/workflows/pages.yml` publishes `site/` (the project page) at https://teddashh.github.io/reset-therapy/ and copies `index.html` to `play/index.html`, so the toy is at https://teddashh.github.io/reset-therapy/play/. It runs when `site/`, `index.html`, or the workflow changes on `main`.
+`.github/workflows/pages.yml` publishes `site/` (the project page) at https://ted-h-com.github.io/reset-therapy/ and copies `index.html` to `play/index.html`, so the toy is at https://ted-h-com.github.io/reset-therapy/play/. It runs when `site/`, `index.html`, or the workflow changes on `main`.
 
 ## Files
 

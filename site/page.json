@@ -1,5 +1,5 @@
 {
-  "repo": "teddashh/reset-therapy",
+  "repo": "TED-H-com/reset-therapy",
   "slug": "reset-therapy",
   "name": "Reset Therapy",
   "mark": "RT",
@@ -47,7 +47,7 @@
       }
     },
     "secondary": {
-      "href": "https://github.com/teddashh/reset-therapy",
+      "href": "https://github.com/TED-H-com/reset-therapy",
       "label": {
         "en": "View the source",
         "zh": "查看原始碼"
@@ -200,7 +200,7 @@
       }
     },
     "secondary": {
-      "href": "https://github.com/teddashh/reset-therapy/tree/main/server/reset_therapy_stats",
+      "href": "https://github.com/TED-H-com/reset-therapy/tree/main/server/reset_therapy_stats",
       "label": {
         "en": "Stats API module",
         "zh": "統計 API 模組"
@@ -213,8 +213,8 @@
           "zh": "線上玩，或在本機打開"
         },
         "body": {
-          "en": "Play at <a href=\"./play/\">./play/</a> (Chinese: <a href=\"./play/?lang=zh\">./play/?lang=zh</a>). For your own copy, clone <a href=\"https://github.com/teddashh/reset-therapy\">the repository</a> and open index.html, or serve the folder and open http://localhost:8000/.",
-          "zh": "線上版在 <a href=\"./play/?lang=zh\">./play/?lang=zh</a>。想自己跑一份，就把 <a href=\"https://github.com/teddashh/reset-therapy\">這個 repo</a> clone 下來，直接用瀏覽器打開 index.html，或用下面的指令架起來，再打開 http://localhost:8000/。"
+          "en": "Play at <a href=\"./play/\">./play/</a> (Chinese: <a href=\"./play/?lang=zh\">./play/?lang=zh</a>). For your own copy, clone <a href=\"https://github.com/TED-H-com/reset-therapy\">the repository</a> and open index.html, or serve the folder and open http://localhost:8000/.",
+          "zh": "線上版在 <a href=\"./play/?lang=zh\">./play/?lang=zh</a>。想自己跑一份，就把 <a href=\"https://github.com/TED-H-com/reset-therapy\">這個 repo</a> clone 下來，直接用瀏覽器打開 index.html，或用下面的指令架起來，再打開 http://localhost:8000/。"
         },
         "code": "cd reset-therapy\npython3 -m http.server 8000"
       },
@@ -375,7 +375,7 @@
       }
     },
     {
-      "href": "https://github.com/teddashh/reset-therapy/blob/main/README.zh-TW.md",
+      "href": "https://github.com/TED-H-com/reset-therapy/blob/main/README.zh-TW.md",
       "label": {
         "en": "中文 README",
         "zh": "中文 README"
