@@ -186,6 +186,20 @@ class WeekIndexTest(unittest.TestCase):
                              (monday - EPOCH_MONDAY).days // 7 + 1, ts)
 
 
+class ConnectTest(unittest.TestCase):
+
+    def test_connect_closes_on_schema_error(self):
+        # A file that cannot be opened as a SQLite database
+        bad_db = tempfile.mktemp()
+        with open(bad_db, 'w') as f:
+            f.write('not a sqlite database')
+        try:
+            with self.assertRaises(sqlite3.DatabaseError):
+                core.connect(bad_db)
+        finally:
+            if os.path.exists(bad_db):
+                os.remove(bad_db)
+
 class LedgerTestCase(unittest.TestCase):
 
     def setUp(self):
