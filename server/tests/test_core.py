@@ -190,7 +190,8 @@ class ConnectTest(unittest.TestCase):
 
     def test_connect_closes_on_schema_error(self):
         # A file that cannot be opened as a SQLite database
-        bad_db = tempfile.mktemp()
+        fd, bad_db = tempfile.mkstemp()
+        os.close(fd)
         with open(bad_db, 'w') as f:
             f.write('not a sqlite database')
         try:
