@@ -28,6 +28,49 @@
 - 支援 prefers-reduced-motion：系統開啟「減少動態效果」時，不播動畫、彩帶和閃屏。
 - 不用建置、沒有相依套件：只有一個自包含的 `index.html`（約 558 KB，美術以 data URI 內嵌，字型來自 Google Fonts）。
 
+## 使用說明
+
+使用 Reset Therapy 很簡單，不需要登入或真的 AI 帳號。
+- **查看額度：** 首頁顯示四家用量面板。你可以看著數字往上爬，模擬額度消耗的樣子。
+- **重置單家服務：** 點擊特定服務底下的「重置」按鈕，或直接點擊被鎖鏈綁住的龍。
+- **全部重置：** 點擊頁面底部大大的「全部重置吧」按鈕，一次釋放所有的龍。
+- **查看排行榜：** 第一次重置後，會出現「本週療癒排行榜」。它會顯示本週各家服務被療癒次數的排名。
+- **切換語言：** 使用右上角的語言切換按鈕，在英文和繁體中文之間切換。
+
+## 環境設定
+
+在本地執行 Reset Therapy 非常容易，因為核心應用程式不需要建置步驟，也沒有相依套件。
+
+1. **前端（應用程式本身）：**
+   只需複製儲存庫，然後用任何網頁瀏覽器打開 `index.html`。
+   ```bash
+   git clone https://github.com/ted-h-com/reset-therapy.git
+   cd reset-therapy
+   # 用瀏覽器打開 index.html
+   ```
+2. **後端（選配的 Odoo 統計模組）：**
+   如果你想執行全站共用的次數統計：
+   - 確保你已設定好 Odoo 19。
+   - 將 `server/reset_therapy_stats` 建立捷徑或複製到你的 Odoo addons 路徑下。
+   - 在你的 Odoo 資料庫中安裝該模組。
+3. **美術流程（選配）：**
+   如果你想重新生成龍的圖片，你需要 Python 3 以及 `Pillow` 和 `openai` 套件。
+   ```bash
+   pip install Pillow openai
+   cd art
+   OPENAI_API_KEY=你的-api-key python3 gen_dragons.py
+   python3 drg_post.py
+   ```
+
+## 系統架構
+
+本專案由幾個鬆散耦合的元件組成：
+
+- **前端（`index.html`）：** 單一個、零相依的 HTML 檔案，包含所有的邏輯、樣式和以 base64 編碼內嵌的美術圖。如果連不到後端，它會自動降級使用 local storage 和固定的假基準值。
+- **後端（`server/`）：** 選配的 Odoo 19 模組（`reset_therapy_stats`）。它提供兩個 API 端點（`/reset-therapy/api/stats` 和 `/reset-therapy/api/heal`），背後使用 SQLite 資料庫來追蹤全站的重置次數並執行速率限制。如果這些端點存在於同源網域，前端就會與之通訊。
+- **美術流程（`art/`）：** 使用 OpenAI API 生成原始圖片的 Python 腳本，接著進行後製處理（裁切、轉換為 WebP格式），然後直接注入到 `index.html` 檔案中。
+- **部署（`.github/workflows/`）：** 每次推送到 `main` 分支時，GitHub Actions 會自動將專案介紹頁（`site/`）和應用程式本身（發佈於 `play/` 的 `index.html`）部署到 GitHub Pages。
+
 ## 執行
 
 線上玩：<https://ted-h-com.github.io/reset-therapy/play/?lang=zh>（英文版：<https://ted-h-com.github.io/reset-therapy/play/>）。

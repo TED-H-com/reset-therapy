@@ -28,6 +28,49 @@ Four painstakingly faked usage panels (ChatGPT / Codex, Claude, Gemini, Grok) si
 - Respects prefers-reduced-motion: no animations, confetti, or screen flash.
 - Zero build step, zero dependencies: one self-contained `index.html` (about 558 KB, art baked in as data URIs, fonts from Google Fonts).
 
+## Usage Instructions
+
+Using Reset Therapy is simple and requires no login or real AI accounts.
+- **View Quotas:** The main page displays four usage panels. Watch the numbers climb as they simulate quota usage.
+- **Reset a Provider:** Click the "Reset" button under a specific provider, or click directly on the chained dragon for that provider.
+- **Reset All:** Click the large "Reset all four" button at the bottom of the page to free all dragons simultaneously.
+- **View Leaderboard:** After your first reset, a "Weekly Therapy Leaderboard" will appear. It shows the rankings of which providers have been healed the most this week.
+- **Language Switch:** Use the language toggle in the top-right corner to switch between English and Traditional Chinese.
+
+## Environment Setup
+
+Running Reset Therapy locally is easy, as the core app has no build step or dependencies.
+
+1. **Frontend (The App):**
+   Simply clone the repository and open `index.html` in any web browser.
+   ```bash
+   git clone https://github.com/ted-h-com/reset-therapy.git
+   cd reset-therapy
+   # Open index.html in your browser
+   ```
+2. **Backend (Optional Odoo Stats Module):**
+   If you want to run the shared global counters:
+   - Ensure you have Odoo 19 set up.
+   - Symlink or copy `server/reset_therapy_stats` into your Odoo addons path.
+   - Install the module within your Odoo database.
+3. **Art Pipeline (Optional):**
+   If you wish to regenerate the dragon art, you will need Python 3 and the `Pillow` and `openai` packages.
+   ```bash
+   pip install Pillow openai
+   cd art
+   OPENAI_API_KEY=your-api-key python3 gen_dragons.py
+   python3 drg_post.py
+   ```
+
+## Workflow Architecture
+
+The project is structured around a few loosely coupled components:
+
+- **Frontend (`index.html`):** A single, zero-dependency HTML file containing all logic, styling, and base64-encoded art. It falls back to local storage and deterministic baselines if the backend is unreachable.
+- **Backend (`server/`):** An optional Odoo 19 module (`reset_therapy_stats`). It provides two API endpoints (`/reset-therapy/api/stats` and `/reset-therapy/api/heal`) backed by a SQLite database to track global reset counts and enforce rate limiting. The frontend communicates with these endpoints if they are available on the same origin.
+- **Art Pipeline (`art/`):** Python scripts use the OpenAI API to generate raw images, which are then processed (cropped, converted to WebP) and injected directly into the `index.html` file.
+- **Deployment (`.github/workflows/`):** GitHub Actions automatically deploy the project page (`site/`) and the application itself (`index.html` served at `play/`) to GitHub Pages on every push to the `main` branch.
+
 ## Run it
 
 Play it at <https://ted-h-com.github.io/reset-therapy/play/> (Chinese: <https://ted-h-com.github.io/reset-therapy/play/?lang=zh>).
