@@ -71,6 +71,8 @@ The project is structured around a few loosely coupled components:
 - **Art Pipeline (`art/`):** Python scripts use the OpenAI API to generate raw images, which are then processed (cropped, converted to WebP) and injected directly into the `index.html` file.
 - **Deployment (`.github/workflows/`):** GitHub Actions automatically deploy the project page (`site/`) and the application itself (`index.html` served at `play/`) to GitHub Pages on every push to the `main` branch.
 
+For a detailed explanation of the client intake workflow, conversation session states, and prompt boundaries, see [Reset Therapy: Flow and State Machine Reference](docs/therapy_flow.md).
+
 ## Run it
 
 Play it at <https://ted-h-com.github.io/reset-therapy/play/> (Chinese: <https://ted-h-com.github.io/reset-therapy/play/?lang=zh>).
