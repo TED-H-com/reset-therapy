@@ -71,6 +71,8 @@
 - **美術流程（`art/`）：** 使用 OpenAI API 生成原始圖片的 Python 腳本，接著進行後製處理（裁切、轉換為 WebP格式），然後直接注入到 `index.html` 檔案中。
 - **部署（`.github/workflows/`）：** 每次推送到 `main` 分支時，GitHub Actions 會自動將專案介紹頁（`site/`）和應用程式本身（發佈於 `play/` 的 `index.html`）部署到 GitHub Pages。
 
+如需了解用戶端載入流程、會話狀態以及提示邊界（prompt boundaries）的詳細說明，請參閱 [Reset Therapy: Flow and State Machine Reference](docs/therapy_flow.md)。
+
 ## 執行
 
 線上玩：<https://ted-h-com.github.io/reset-therapy/play/?lang=zh>（英文版：<https://ted-h-com.github.io/reset-therapy/play/>）。
