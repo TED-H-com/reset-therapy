@@ -1,3 +1,5 @@
 art/out/
 __pycache__/
 *.pyc
+node_modules/
+test-results/
