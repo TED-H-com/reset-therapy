@@ -340,11 +340,21 @@ class HandlerTest(LedgerTestCase):
 
     def test_valid_heal_returns_fresh_stats(self):
         status, data, headers = self.post(body({'providers': ['claude', 'grok']}))
-        self.assertEqual((status, headers), (200, []))
+        self.assertEqual(status, 200)
+        self.assertIn(('X-Content-Type-Options', 'nosniff'), headers)
+        self.assertIn(('X-Frame-Options', 'DENY'), headers)
+        self.assertIn(('Strict-Transport-Security', 'max-age=31536000; includeSubDomains'), headers)
+        self.assertIn(('Content-Security-Policy', "default-src 'none'"), headers)
         self.assertEqual(data['weekIdx'], core.week_index(T0))
         self.assertEqual(data['week'], {'claude': 1, 'codex': 0, 'gemini': 0, 'grok': 1})
         self.assertEqual(data['all'], data['week'])
-        self.assertEqual(core.handle_stats(self.path, T0), (200, data, []))
+        stats_status, stats_data, stats_headers = core.handle_stats(self.path, T0)
+        self.assertEqual(stats_status, 200)
+        self.assertEqual(stats_data, data)
+        self.assertIn(('X-Content-Type-Options', 'nosniff'), stats_headers)
+        self.assertIn(('X-Frame-Options', 'DENY'), stats_headers)
+        self.assertIn(('Strict-Transport-Security', 'max-age=31536000; includeSubDomains'), stats_headers)
+        self.assertIn(('Content-Security-Policy', "default-src 'none'"), stats_headers)
 
     def test_malformed_input_is_400_with_a_json_error(self):
         for raw in (b'not json', b'', b'[]', b'null', b'{"providers": "claude"}',
@@ -364,13 +374,29 @@ class HandlerTest(LedgerTestCase):
                                            '192.0.2.1', now=T0)
         self.assertEqual((status, data), (400, {'error': 'too big'}))
 
+    def test_deeply_nested_json_is_refused(self):
+        nested = b'{"providers": [' + b'[' * 1500 + b'"claude"' + b']' * 1500 + b']}'
+        # If max body limit allows it but depth is too high, it should not crash.
+        # Max body is 4096. The above is ~3000 bytes.
+        with self.assertRaises(core.BadRequest) as ctx:
+            core.parse_heal(nested)
+        # Deeply nested might parse successfully or fail with RecursionError.
+        # But in either case it shouldn't crash the server. If it parses, it's not a list of strings.
+        self.assertIn(str(ctx.exception), ('bad json', 'providers must be a list of strings'))
+
+    def test_missing_content_length_header_treated_as_zero_or_handled(self):
+        # When content length is None, it should still process up to MAX_BODY.
+        status, data, _ = core.handle_heal(self.path, None, lambda: body({'providers': ['claude']}), self.HEADERS,
+                                           '192.0.2.1', now=T0)
+        self.assertEqual(status, 200)
+
     def test_over_the_limit_is_429_with_retry_after(self):
         ok = body({'providers': ['codex']})
         for i in range(30):
             self.assertEqual(self.post(ok, now=T0 + i)[0], 200)
         status, data, headers = self.post(ok, now=T0 + 30)
         self.assertEqual((status, data), (429, {'error': 'rate limited'}))
-        self.assertEqual(headers, [('Retry-After', '30')])
+        self.assertIn(('Retry-After', '30'), headers)
         # malformed input is still 400, and other clients still get through
         self.assertEqual(self.post(b'oops', now=T0 + 30)[0], 400)
         other = {'X-Forwarded-For': '198.51.100.1, 192.0.2.9'}

@@ -166,11 +166,19 @@ def stats(con, now=None):
     return {'weekIdx': wk, 'week': week, 'all': total}
 
 
+def _sec_headers():
+    return [
+        ('X-Content-Type-Options', 'nosniff'),
+        ('X-Frame-Options', 'DENY'),
+        ('Strict-Transport-Security', 'max-age=31536000; includeSubDomains'),
+        ('Content-Security-Policy', "default-src 'none'"),
+    ]
+
 def handle_stats(path, now=None):
     """GET /reset-therapy/api/stats -> (status, payload, extra headers)."""
     con = connect(path)
     try:
-        return 200, stats(con, now), []
+        return 200, stats(con, now), _sec_headers()
     finally:
         con.close()
 
@@ -187,14 +195,14 @@ def handle_heal(path, content_length, read_body, headers, remote_addr,
             raise BadRequest('too big')
         provs = parse_heal(read_body())
     except BadRequest as exc:
-        return 400, {'error': str(exc)}, []
+        return 400, {'error': str(exc)}, _sec_headers()
     now = time.time() if now is None else now
     con = connect(path)
     try:
         heal(con, client_addr(headers, remote_addr), provs, now)
-        return 200, stats(con, now), []
+        return 200, stats(con, now), _sec_headers()
     except RateLimited as exc:
         return (429, {'error': 'rate limited'},
-                [('Retry-After', str(exc.retry_after))])
+                _sec_headers() + [('Retry-After', str(exc.retry_after))])
     finally:
         con.close()
