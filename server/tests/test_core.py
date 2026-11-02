@@ -345,6 +345,8 @@ class HandlerTest(LedgerTestCase):
         self.assertIn(('X-Frame-Options', 'DENY'), headers)
         self.assertIn(('Strict-Transport-Security', 'max-age=31536000; includeSubDomains'), headers)
         self.assertIn(('Content-Security-Policy', "default-src 'none'"), headers)
+        self.assertIn(('Referrer-Policy', 'no-referrer'), headers)
+        self.assertIn(('Cross-Origin-Opener-Policy', 'same-origin'), headers)
         self.assertEqual(data['weekIdx'], core.week_index(T0))
         self.assertEqual(data['week'], {'claude': 1, 'codex': 0, 'gemini': 0, 'grok': 1})
         self.assertEqual(data['all'], data['week'])
@@ -355,6 +357,8 @@ class HandlerTest(LedgerTestCase):
         self.assertIn(('X-Frame-Options', 'DENY'), stats_headers)
         self.assertIn(('Strict-Transport-Security', 'max-age=31536000; includeSubDomains'), stats_headers)
         self.assertIn(('Content-Security-Policy', "default-src 'none'"), stats_headers)
+        self.assertIn(('Referrer-Policy', 'no-referrer'), stats_headers)
+        self.assertIn(('Cross-Origin-Opener-Policy', 'same-origin'), stats_headers)
 
     def test_malformed_input_is_400_with_a_json_error(self):
         for raw in (b'not json', b'', b'[]', b'null', b'{"providers": "claude"}',
@@ -384,11 +388,11 @@ class HandlerTest(LedgerTestCase):
         # But in either case it shouldn't crash the server. If it parses, it's not a list of strings.
         self.assertIn(str(ctx.exception), ('bad json', 'providers must be a list of strings'))
 
-    def test_missing_content_length_header_treated_as_zero_or_handled(self):
-        # When content length is None, it should still process up to MAX_BODY.
+    def test_missing_content_length_header_refused(self):
         status, data, _ = core.handle_heal(self.path, None, lambda: body({'providers': ['claude']}), self.HEADERS,
                                            '192.0.2.1', now=T0)
-        self.assertEqual(status, 200)
+        self.assertEqual(status, 400)
+        self.assertEqual(data, {'error': 'length required'})
 
     def test_over_the_limit_is_429_with_retry_after(self):
         ok = body({'providers': ['codex']})

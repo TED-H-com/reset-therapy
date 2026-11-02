@@ -172,6 +172,8 @@ def _sec_headers():
         ('X-Frame-Options', 'DENY'),
         ('Strict-Transport-Security', 'max-age=31536000; includeSubDomains'),
         ('Content-Security-Policy', "default-src 'none'"),
+        ('Referrer-Policy', 'no-referrer'),
+        ('Cross-Origin-Opener-Policy', 'same-origin'),
     ]
 
 def handle_stats(path, now=None):
@@ -191,7 +193,9 @@ def handle_heal(path, content_length, read_body, headers, remote_addr,
     oversized upload is refused without reading it.
     """
     try:
-        if (content_length or 0) > MAX_BODY:
+        if content_length is None:
+            raise BadRequest('length required')
+        if content_length > MAX_BODY:
             raise BadRequest('too big')
         provs = parse_heal(read_body())
     except BadRequest as exc:
