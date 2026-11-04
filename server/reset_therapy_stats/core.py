@@ -97,12 +97,27 @@ def client_addr(headers, remote_addr=None):
     /64, the block one client usually holds. The headers are trusted as sent,
     so the server must only be reachable through the proxy.
     """
-    h = {str(k).lower(): v for k, v in (headers or {}).items()}
-    addr = (h.get('cf-connecting-ip') or '').strip()
+    h = headers or {}
+    addr = h.get('CF-Connecting-IP') or h.get('cf-connecting-ip')
     if not addr:
-        addr = (h.get('x-forwarded-for') or '').split(',')[0].strip()
+        for k, v in h.items():
+            if str(k).lower() == 'cf-connecting-ip':
+                addr = v
+                break
+    addr = (addr or '').strip()
+
+    if not addr:
+        addr = h.get('X-Forwarded-For') or h.get('x-forwarded-for')
+        if not addr:
+            for k, v in h.items():
+                if str(k).lower() == 'x-forwarded-for':
+                    addr = v
+                    break
+        addr = (addr or '').split(',')[0].strip()
+
     if not addr:
         addr = (remote_addr or '').strip()
+
     try:
         ip = ipaddress.ip_address(addr)
     except ValueError:
@@ -158,11 +173,12 @@ def stats(con, now=None):
     wk = week_index(now)
     week = dict.fromkeys(PROVIDERS, 0)
     total = dict.fromkeys(PROVIDERS, 0)
-    for prov, w, n in con.execute('SELECT provider, week, n FROM heals'):
+    for prov, w_n, t_n in con.execute(
+            'SELECT provider, SUM(CASE WHEN week = ? THEN n ELSE 0 END), SUM(n) FROM heals GROUP BY provider',
+            (wk,)):
         if prov in total:
-            total[prov] += n
-            if w == wk:
-                week[prov] += n
+            week[prov] = w_n or 0
+            total[prov] = t_n or 0
     return {'weekIdx': wk, 'week': week, 'all': total}
 
 

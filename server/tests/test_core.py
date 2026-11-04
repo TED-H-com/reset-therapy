@@ -417,5 +417,26 @@ class HandlerTest(LedgerTestCase):
         self.assertEqual((status, data['week']['claude'], data['all']['claude']), (200, 8, 8))
 
 
+class PerfTest(unittest.TestCase):
+    """Performance benchmarks to ensure we don't regress."""
+
+    def setUp(self):
+        self.con = core.connect(':memory:')
+        for prov in core.PROVIDERS:
+            for week in range(2000):
+                self.con.execute('INSERT INTO heals (provider, week, n) VALUES (?, ?, 1)', (prov, week))
+
+    def tearDown(self):
+        self.con.close()
+
+    def test_stats_performance(self):
+        import time
+        t0 = time.time()
+        for _ in range(100):
+            core.stats(self.con, now=T0)
+        dt = time.time() - t0
+        self.assertLess(dt, 2.0, "core.stats() is too slow, likely not using GROUP BY optimization")
+
+
 if __name__ == '__main__':
     unittest.main()
